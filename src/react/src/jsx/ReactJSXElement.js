@@ -1,4 +1,4 @@
-import { REACT_ELEMENT_TYPE } from 'shared/ReactSymbol';
+import { REACT_ELEMENT_TYPE } from 'shared/ReactSymbols';
 import hasOwnProperty from 'shared/hasOwnProperty';
 
 const RESERVED_PROPS = {
