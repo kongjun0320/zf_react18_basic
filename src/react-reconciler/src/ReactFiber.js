@@ -8,7 +8,7 @@ import { HostRoot } from './ReactWorkTags';
  * @param {*} key 唯一标识
  */
 export function FiberNode(tag, pendingProps, key) {
-  this.tag = tag;
+  this.tag = tag; // fiber 的类型
   this.key = key;
   this.type = null; // fiber 类型，来自于虚拟 DOM 节点的 type（span div p）
   // 每个虚拟 DOM -> fiber 节点 -> 真实 DOM
@@ -22,7 +22,7 @@ export function FiberNode(tag, pendingProps, key) {
   // 已经生效的属性
   this.memoizedProps = null;
   // 每个 fiber 还有有自己的状态，每一种 fiber 状态存的类型不一样
-  // 类组件的对应的fiber 存的就是类的实例的状态，HostRoot 存的就是要渲染的元素
+  // 类组件的对应的 fiber 存的就是类的实例的状态，HostRoot 存的就是要渲染的元素
   this.memoizedState = null;
   // 每个 fiber 身上可能还有更新队列
   this.updateQueue = null;
