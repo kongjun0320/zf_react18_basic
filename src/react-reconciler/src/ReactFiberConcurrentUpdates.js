@@ -8,7 +8,7 @@ export function markUpdateLaneFromFiberToRoot(sourceFiber) {
   // 当前 fiber
   let node = sourceFiber;
   // 当前 fiber 父 fiber
-  const parent = sourceFiber.return;
+  let parent = sourceFiber.return;
   while (parent !== null) {
     node = parent;
     parent = parent.return;
@@ -17,6 +17,6 @@ export function markUpdateLaneFromFiberToRoot(sourceFiber) {
   if (node.tag === HostRoot) {
     return node.stateNode;
   }
-  log;
+
   return null;
 }

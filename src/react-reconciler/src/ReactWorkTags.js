@@ -3,7 +3,9 @@ export const ClassComponent = 1;
 export const IndeterminateComponent = 2; // Before we know whether it is function or class
 // 根 fiber 的 tag，每种虚拟 DOM 都会对应自己的 fiber tag 类型
 export const HostRoot = 3; // Root of a host tree. Could be nested inside another node.
+// 原生节点 div span h1
 export const HostPortal = 4; // A subtree. Could be an entry point to a different renderer.
+// 纯文本节点
 export const HostComponent = 5;
 export const HostText = 6;
 export const Fragment = 7;
