@@ -80,3 +80,14 @@ workLoop();
  每一个 fiber 执行完成后都可以放弃执行，让浏览器执行更高优先级的任务，等待浏览器执行完后再回来执行下一个 fiber
  
  */
+
+/**
+  
+    1、虚拟 DOM 渲染
+    2、函数组件
+    3、useReducer useState
+    4、DOM-DIFF
+    5、任务调度
+    6、优先级 lane 和并发
+
+  */

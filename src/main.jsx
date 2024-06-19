@@ -8,5 +8,5 @@ const element = (
 console.log(element);
 
 const root = createRoot(document.getElementById('root'));
-console.log('root >>> ', root);
-// root.render(element);
+// console.log('root >>> ', root);
+root.render(element);
