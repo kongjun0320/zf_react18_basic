@@ -1,7 +1,8 @@
-import logger from 'shared/logger';
+import logger, { indent } from 'shared/logger';
 import { HostComponent, HostRoot, HostText } from './ReactWorkTags';
 import { processUpdateQueue } from './ReactFiberClassUpdateQueue';
 import { mountChildFibers, reconcileChildFibers } from './ReactChildFiber';
+import { shouldSetTextContent } from 'react-dom-bindings/src/ReactDOMHostConfig';
 
 /**
  * 根据新的虚拟 DOM 生成新的 fiber 链表
@@ -10,7 +11,8 @@ import { mountChildFibers, reconcileChildFibers } from './ReactChildFiber';
  * @param {*} nextChildren 新的子虚拟 DOM
  */
 function reconcileChildren(current, workInProgress, nextChildren) {
-  // 如果此 fiber 没有老 fiber，说明此新的 fiber 是新建的
+  // 如果此新 fiber 没有老 fiber，说明此新 fiber 是新创建的
+  // 对应的老 fiber，说明此 fiber 是新创建的，如果这个父 fiber 是新创建的，它的儿子们也是新创建的
   if (current === null) {
     workInProgress.child = mountChildFibers(workInProgress, null, nextChildren);
   } else {
@@ -36,7 +38,24 @@ function updateHostRoot(current, workInProgress) {
   return workInProgress.child;
 }
 
-function updateHostComponent(current, workInProgress) {}
+/**
+ * 构建原生组件的子 fiber 链表
+ * @param {*} current 老 fiber
+ * @param {*} workInProgress 新 fiber
+ */
+function updateHostComponent(current, workInProgress) {
+  const { type } = workInProgress;
+  const nextProps = workInProgress.pendingProps;
+  let nextChildren = nextProps.children;
+  // 判断当前虚拟 DOM 它的儿子是不是文本的独生子
+  const isDirectTextChild = shouldSetTextContent(type, nextProps);
+  if (isDirectTextChild) {
+    nextChildren = null;
+  }
+  // 协调子节点 DOM-DIFF 算法
+  reconcileChildren(current, workInProgress, nextChildren);
+  return workInProgress.child;
+}
 
 /**
  * 目标是，根据虚拟 DOM 构建新的 fiber 子链表 child child.sibling
@@ -45,7 +64,8 @@ function updateHostComponent(current, workInProgress) {}
  * @returns
  */
 export function beginWork(current, workInProgress) {
-  logger('beginWork', workInProgress);
+  logger(' '.repeat(indent.number) + 'beginWork', workInProgress);
+  indent.number += 2;
 
   switch (workInProgress.tag) {
     case HostRoot:

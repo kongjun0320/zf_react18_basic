@@ -2,6 +2,7 @@ import { NoFlags } from './ReactFiberFlags';
 import {
   HostComponent,
   HostRoot,
+  HostText,
   IndeterminateComponent,
 } from './ReactWorkTags';
 
@@ -36,6 +37,7 @@ export function FiberNode(tag, pendingProps, key) {
   this.subtreeFlags = NoFlags;
   // 替身，轮替，后面的 dom-diff 时会用到
   this.alternate = null;
+  this.index = 0;
 }
 
 export function createFiber(tag, pendingProps, key) {
@@ -80,7 +82,7 @@ export function createWorkInProgress(current, pendingProps) {
  * @param {*} element
  */
 export function createFiberFromElement(element) {
-  const { type, key, pendingProps } = element;
+  const { type, key, props: pendingProps } = element;
   return createFiberFromTypeAndProps(type, key, pendingProps);
 }
 
@@ -93,4 +95,8 @@ function createFiberFromTypeAndProps(type, key, pendingProps) {
   const fiber = createFiber(tag, pendingProps, key);
   fiber.type = type;
   return fiber;
+}
+
+export function createFiberFromText(content) {
+  return createFiber(HostText, content, null);
 }
