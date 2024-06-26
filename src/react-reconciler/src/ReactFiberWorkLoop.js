@@ -28,15 +28,16 @@ function performConcurrentWorkOnRoot(root) {
   // console.log('performConcurrentWorkOnRoot >>> ', root);
   // 第一次渲染，以同步的方法渲染根节点，初次渲染的时候，都是同步的
   renderRootSync(root);
+  console.log('root >>> ', root);
 }
 
 function prepareFreshStack(root) {
   workInProgress = createWorkInProgress(root.current);
-  console.log('workInProgress >>> ', workInProgress);
+  // console.log('workInProgress >>> ', workInProgress);
 }
 
 function renderRootSync(root) {
-  console.log('root >>> ', root);
+  // console.log('root >>> ', root);
   // 开始构建 fiber 树
   prepareFreshStack(root);
   workLoopSync();
