@@ -6,9 +6,13 @@ import {
   IndeterminateComponent,
 } from './ReactWorkTags';
 
+// We use a double buffering pooling technique because we know that we'll
+// only ever need at most two versions of a tree. We pool the "other" unused
+// node that we're free to reuse.
+
 /**
  *
- * @param {*} tag fiber 的类型，函数组件0、类组件1、原生组件5、根元素 3
+ * @param {*} tag fiber 的类型，函数组件0、类组件1、原生组件5 (span、div)、根元素 3
  * @param {*} pendingProps 新属性，等待处理或者说生效的属性
  * @param {*} key 唯一标识
  */

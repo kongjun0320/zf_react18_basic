@@ -23,6 +23,7 @@ function enqueueUpdate(fiber, update) {
     // 然后让原来队列的最后一个的 next 指向新的 next
     pending.next = update;
   }
+  // pending 永远是指向最新进入的
   updateQueue.shared.pending = update;
 }
 

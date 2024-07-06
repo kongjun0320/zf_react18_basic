@@ -32,7 +32,7 @@
     requestIdleCallback(workLoop);
     function workLoop(deadline) {
       // 因为一帧是 16.6 ms，浏览器执行完高优先级之后，如果还有时间，会执行 workLoop 方法，timeRemaining 获取此帧剩下的时间
-      console.log('本帧的剩余时间是 >>> ', deadline.timeRemaining());
+      console.log('本帧的剩余时间是 >>> ', deadline.timeRemaining() + ' ms');
       //   如果没有剩余时间了，就会跳出循环
       while (deadline.timeRemaining() > 1 && works.length > 0) {
         performUnitOfWork();
@@ -40,7 +40,10 @@
 
       // 如果还有剩余任务
       if (works.length > 0) {
-        console.log('只剩下 >>> ', deadline.timeRemaining());
+        console.log(
+          '只剩下',
+          deadline.timeRemaining() + ' ms，等待浏览器下次空闲的时候再帮我调用'
+        );
         requestIdleCallback(workLoop);
       }
     }
