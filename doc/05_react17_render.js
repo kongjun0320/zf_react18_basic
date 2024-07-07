@@ -54,7 +54,7 @@ function render(vDom, container) {
     .forEach((key) => {
       dom[key] = vDom.props[key];
     });
-  // ! 比如：代码执行到此，想中断，就回不来了，因为执行栈已经回收了
+  // ! 比如：代码执行到此，想中断，只能 return ，就回不来了，因为执行栈已经回收了
   // 把虚拟 DOM 的子节点，也渲染到父节点真实 DOM 上
   if (Array.isArray(vDom.props.children)) {
     vDom.props.children.forEach((child) => render(child, dom));
