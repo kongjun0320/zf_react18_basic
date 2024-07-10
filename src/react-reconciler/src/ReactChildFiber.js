@@ -57,6 +57,8 @@ function createChildReconciler(shouldTrackSideEffects) {
     newFiber.index = newIndex;
     if (shouldTrackSideEffects) {
       // 如果一个 fiber 它的 flags 有 placement，说明此节点需要创建真实 DOM 并且插入到父容器中
+      // 如果父 fiber 节点是初次挂载，shouldTrackSideEffects 为 false，不需要添加 flags
+      // 这种情况下会在完成阶段把所有的子节点全部添加到自己身上
       newFiber.flags |= Placement;
     }
   }

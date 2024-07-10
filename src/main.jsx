@@ -5,8 +5,8 @@ const element = (
     hello <span style={{ color: 'red' }}>world</span>
   </h1>
 );
-console.log(element);
+// console.log(element);
 
 const root = createRoot(document.getElementById('root'));
-console.log('root >>> ', root);
+// console.log('root >>> ', root);
 root.render(element);

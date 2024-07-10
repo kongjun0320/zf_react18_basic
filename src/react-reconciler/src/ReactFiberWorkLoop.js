@@ -60,7 +60,7 @@ function commitRoot(root) {
 
 function prepareFreshStack(root) {
   workInProgress = createWorkInProgress(root.current);
-  console.log('workInProgress >>> ', workInProgress);
+  // console.log('workInProgress >>> ', workInProgress);
 }
 
 function renderRootSync(root) {
@@ -88,8 +88,8 @@ function performUnitOfWork(unitOfWork) {
   unitOfWork.memoizedProps = unitOfWork.pendingProps;
   if (next === null) {
     // 如果没有子节点，表示当前的 fiber 已经完成了
-    workInProgress = null;
-    // completeUnitOfWork(unitOfWork);
+    // workInProgress = null;
+    completeUnitOfWork(unitOfWork);
   } else {
     // 如果有子节点，就让子节点成为下一个工作单元
     workInProgress = next;
@@ -102,12 +102,16 @@ function completeUnitOfWork(unitOfWork) {
     const current = completedWork.alternate;
     const returnFiber = completedWork.return;
     // 执行此 fiber 的完成工作，如果是原生组件的话，就是创建真实的 DOM 节点
+    // 拿到老 fiber，新 fiber
     completeWork(current, completedWork);
+    // 如果有弟弟，就构建弟弟对应的 fiber 子链表
     const siblingFiber = completedWork.sibling;
     if (siblingFiber !== null) {
       workInProgress = siblingFiber;
       return;
     }
+    // 如果没有弟弟，说明这当前完成的就是父 fiber 的最后一个节点
+    // 也就是说一个父 fiber，所有的子 fiber 全部完成了
     completedWork = returnFiber;
     workInProgress = completedWork;
   } while (completedWork !== null);

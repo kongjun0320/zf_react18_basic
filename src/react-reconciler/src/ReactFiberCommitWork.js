@@ -23,7 +23,7 @@ function commitReconciliationEffects(finishedWork) {
 }
 
 function commitPlacement(finishedWork) {
-  console.log('finishedWork >>> ', finishedWork);
+  // console.log('finishedWork >>> ', finishedWork);
 }
 
 /**
