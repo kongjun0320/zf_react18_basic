@@ -58,7 +58,7 @@ function updateHostComponent(current, workInProgress) {
 }
 
 /**
- * 目标是，根据虚拟 DOM 构建新的 fiber 子链表 child child.sibling
+ * 目标是，根据虚拟 DOM 构建新的 fiber 子链表 child child.sibling，返回的是子节点
  * @param {*} current 老的 fiber
  * @param {*} workInProgress 新的 fiber
  * @returns
@@ -75,6 +75,7 @@ export function beginWork(current, workInProgress) {
       return updateHostComponent(current, workInProgress);
 
     case HostText:
+      // 文本节点没有子节点，就返回 null
       return null;
 
     default:

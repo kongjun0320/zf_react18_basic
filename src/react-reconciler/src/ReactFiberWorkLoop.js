@@ -5,6 +5,13 @@ import { completeWork } from './ReactFiberCompleteWork';
 import { MutationMask, NoFlags } from './ReactFiberFlags';
 import { commitMutationEffectsOnFiber } from './ReactFiberCommitWork';
 
+/**
+ 
+current: 当前页面显示的 fiber 树
+workInProgress: 正在构建中的 fiber 树
+  
+ */
+
 let workInProgress = null;
 
 /**
@@ -53,7 +60,7 @@ function commitRoot(root) {
 
 function prepareFreshStack(root) {
   workInProgress = createWorkInProgress(root.current);
-  // console.log('workInProgress >>> ', workInProgress);
+  console.log('workInProgress >>> ', workInProgress);
 }
 
 function renderRootSync(root) {
@@ -81,8 +88,8 @@ function performUnitOfWork(unitOfWork) {
   unitOfWork.memoizedProps = unitOfWork.pendingProps;
   if (next === null) {
     // 如果没有子节点，表示当前的 fiber 已经完成了
-    // workInProgress = null;
-    completeUnitOfWork(unitOfWork);
+    workInProgress = null;
+    // completeUnitOfWork(unitOfWork);
   } else {
     // 如果有子节点，就让子节点成为下一个工作单元
     workInProgress = next;

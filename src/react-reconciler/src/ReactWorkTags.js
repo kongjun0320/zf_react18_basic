@@ -1,5 +1,6 @@
 export const FunctionComponent = 0;
 export const ClassComponent = 1;
+// 后面会讲到组件，类组件和函数组件，因为它们都是函数，刚开始定义为未决定的类型
 export const IndeterminateComponent = 2; // Before we know whether it is function or class
 // 根 fiber 的 tag，每种虚拟 DOM 都会对应自己的 fiber tag 类型
 export const HostRoot = 3; // Root of a host tree. Could be nested inside another node.
