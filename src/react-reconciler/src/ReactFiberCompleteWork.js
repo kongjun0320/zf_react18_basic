@@ -42,6 +42,11 @@ function appendAllChildren(parent, workInProgress) {
   }
 }
 
+/**
+ * 完成一个 fiber 节点
+ * @param {*} current 老 fiber
+ * @param {*} workInProgress 新构建的 fiber
+ */
 export function completeWork(current, workInProgress) {
   indent.number -= 2;
   logger(' '.repeat(indent.number) + 'completeWork', workInProgress);
