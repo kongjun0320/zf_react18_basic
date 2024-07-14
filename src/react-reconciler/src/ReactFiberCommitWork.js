@@ -1,3 +1,7 @@
+import {
+  appendChild,
+  insertBefore,
+} from 'react-dom-bindings/src/client/ReactDOMHostConfig';
 import { MutationMask, Placement } from './ReactFiberFlags';
 import { HostComponent, HostRoot, HostText } from './ReactWorkTags';
 
@@ -22,8 +26,108 @@ function commitReconciliationEffects(finishedWork) {
   }
 }
 
+function isHostParent(fiber) {
+  return fiber.tag === HostComponent || fiber.tag === HostRoot; // div#root
+}
+
+function getHostParentFiber(fiber) {
+  let parent = fiber.return;
+  while (parent !== null) {
+    if (isHostParent(parent)) {
+      return parent;
+    }
+    parent = parent.return;
+  }
+  return parent;
+}
+
+/**
+ * 把子节点对应的真实 DOM 插入到父节点中
+ * @param {*} node 将要插入的 fiber 节点
+ * @param {*} parent 父真实 DOM 节点
+ */
+function insertOrAppendPlacementNode(node, parent, before) {
+  const { tag } = node;
+  // 判断此 fiber 对应的节点，是不是真实 DOM 节点
+  const isHost = tag === HostComponent || tag === HostText;
+  // 如果是的话，直接插入
+  if (isHost) {
+    const { stateNode } = node;
+    if (before) {
+      insertBefore(parent, stateNode, before);
+    } else {
+      appendChild(parent, stateNode);
+    }
+  } else {
+    // 如果 node 不是真实的 DOM 节点，获取它的大儿子
+    const { child } = node;
+    if (child !== null) {
+      // 把大儿子添加到父亲 DOM 节点里面去
+      insertOrAppendPlacementNode(child, parent);
+      let { sibling } = child;
+      while (sibling !== null) {
+        insertOrAppendPlacementNode(sibling, parent);
+        sibling = sibling.sibling;
+      }
+    }
+  }
+}
+
+/**
+ * 找到要插入的锚点
+ * 找到可以插在它的前面点那个 fiber 的真实 DOM
+ * @param {*} fiber
+ */
+function getHostSibling(fiber) {
+  let node = fiber;
+  siblings: while (true) {
+    while (node.sibling === null) {
+      if (node.return === null || isHostParent(node.return)) {
+        return null;
+      }
+      node = node.return;
+    }
+    node = node.sibling;
+    // 如果弟弟不是原生节点，也不是文本节点
+    while (node.tag !== HostComponent && node.tag !== HostText) {
+      // 如果此节点是一个将要插入的节点，找它的弟弟
+      if (node.flags & Placement) {
+        continue siblings;
+      } else {
+        node = node.child;
+      }
+    }
+    if (!(node.flags & Placement)) {
+      return node.stateNode;
+    }
+  }
+}
+
+/**
+ * 把此 fiber 的真实 DOM 插入到父 DOM 里
+ * @param {*} finishedWork
+ */
 function commitPlacement(finishedWork) {
-  // console.log('finishedWork >>> ', finishedWork);
+  const parentFiber = getHostParentFiber(finishedWork);
+  switch (parentFiber.tag) {
+    case HostRoot: {
+      const parent = parentFiber.stateNode.containerInfo;
+      // 获取最近的弟弟真实 DOM 节点
+      const before = getHostSibling(finishedWork);
+      insertOrAppendPlacementNode(finishedWork, parent, before);
+      break;
+    }
+
+    case HostComponent: {
+      const parent = parentFiber.stateNode;
+      const before = getHostSibling(finishedWork);
+      insertOrAppendPlacementNode(finishedWork, parent, before);
+      break;
+    }
+
+    default:
+      break;
+  }
 }
 
 /**
