@@ -1,8 +1,15 @@
 import logger, { indent } from 'shared/logger';
-import { HostComponent, HostRoot, HostText } from './ReactWorkTags';
+import {
+  FunctionComponent,
+  HostComponent,
+  HostRoot,
+  HostText,
+  IndeterminateComponent,
+} from './ReactWorkTags';
 import { processUpdateQueue } from './ReactFiberClassUpdateQueue';
 import { mountChildFibers, reconcileChildFibers } from './ReactChildFiber';
 import { shouldSetTextContent } from 'react-dom-bindings/src/client/ReactDOMHostConfig';
+import { renderWithHooks } from './ReactFiberHooks';
 
 /**
  * 根据新的虚拟 DOM 生成新的 fiber 链表
@@ -58,6 +65,24 @@ function updateHostComponent(current, workInProgress) {
 }
 
 /**
+ * 挂载函数组件
+ * @param {*} current 老 fiber
+ * @param {*} workInProgress 新 fiber
+ * @param {*} Component 组件类型，函数组件的定义
+ */
+export function mountIndeterminateComponent(
+  current,
+  workInProgress,
+  Component
+) {
+  const props = workInProgress.pendingProps;
+  const value = renderWithHooks(current, workInProgress, Component, props);
+  workInProgress.tag = FunctionComponent;
+  reconcileChildren(current, workInProgress, value);
+  return workInProgress.child;
+}
+
+/**
  * 目标是，根据虚拟 DOM 构建新的 fiber 子链表 child child.sibling，返回的是子节点
  * @param {*} current 老的 fiber
  * @param {*} workInProgress 新的 fiber
@@ -68,6 +93,14 @@ export function beginWork(current, workInProgress) {
   indent.number += 2;
 
   switch (workInProgress.tag) {
+    // 因为在 React 里组件其实有两种，一种是函数组件，一种是类组件，但是它们都是函数
+    case IndeterminateComponent:
+      return mountIndeterminateComponent(
+        current,
+        workInProgress,
+        workInProgress.type
+      );
+
     case HostRoot:
       return updateHostRoot(current, workInProgress);
 

@@ -1,3 +1,4 @@
+// 函数组件
 export const FunctionComponent = 0;
 export const ClassComponent = 1;
 // 后面会讲到组件，类组件和函数组件，因为它们都是函数，刚开始定义为未决定的类型

@@ -27,6 +27,12 @@ export function appendChild(parentInstance, child) {
   parentInstance.appendChild(child);
 }
 
+/**
+ *
+ * @param {*} parentInstance 父 DOM 节点
+ * @param {*} child 子 DOM 节点
+ * @param {*} beforeChild 插入到谁的前面
+ */
 export function insertBefore(parentInstance, child, beforeChild) {
   parentInstance.insertBefore(child, beforeChild);
 }

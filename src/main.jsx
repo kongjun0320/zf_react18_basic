@@ -1,12 +1,17 @@
 import { createRoot } from 'react-dom/client';
-// debugger;
-const element = (
-  <h1 id="container">
-    hello <span style={{ color: 'red' }}>world</span>
-  </h1>
-);
-// console.log(element);
+
+function FunctionComponent() {
+  return (
+    <h1 id="container">
+      hello <span style={{ color: 'red' }}>world</span>
+    </h1>
+  );
+}
+const element = <FunctionComponent />;
+// 这种写法，在新版的 React 中，等于
+// const element = jsx(FunctionComponent)
+// 老版
+// const element = React.createElement(FunctionComponent)
 
 const root = createRoot(document.getElementById('root'));
-// console.log('root >>> ', root);
 root.render(element);

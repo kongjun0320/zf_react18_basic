@@ -3,7 +3,12 @@ import {
   insertBefore,
 } from 'react-dom-bindings/src/client/ReactDOMHostConfig';
 import { MutationMask, Placement } from './ReactFiberFlags';
-import { HostComponent, HostRoot, HostText } from './ReactWorkTags';
+import {
+  FunctionComponent,
+  HostComponent,
+  HostRoot,
+  HostText,
+} from './ReactWorkTags';
 
 function recursivelyTraverseMutationEffects(root, parentFiber) {
   if (parentFiber.subtreeFlags & MutationMask) {
@@ -46,7 +51,7 @@ function getHostParentFiber(fiber) {
  * @param {*} node 将要插入的 fiber 节点
  * @param {*} parent 父真实 DOM 节点
  */
-function insertOrAppendPlacementNode(node, parent, before) {
+function insertOrAppendPlacementNode(node, before, parent) {
   const { tag } = node;
   // 判断此 fiber 对应的节点，是不是真实 DOM 节点
   const isHost = tag === HostComponent || tag === HostText;
@@ -63,10 +68,10 @@ function insertOrAppendPlacementNode(node, parent, before) {
     const { child } = node;
     if (child !== null) {
       // 把大儿子添加到父亲 DOM 节点里面去
-      insertOrAppendPlacementNode(child, parent);
+      insertOrAppendPlacementNode(child, before, parent);
       let { sibling } = child;
       while (sibling !== null) {
-        insertOrAppendPlacementNode(sibling, parent);
+        insertOrAppendPlacementNode(sibling, before, parent);
         sibling = sibling.sibling;
       }
     }
@@ -114,14 +119,14 @@ function commitPlacement(finishedWork) {
       const parent = parentFiber.stateNode.containerInfo;
       // 获取最近的弟弟真实 DOM 节点
       const before = getHostSibling(finishedWork);
-      insertOrAppendPlacementNode(finishedWork, parent, before);
+      insertOrAppendPlacementNode(finishedWork, before, parent);
       break;
     }
 
     case HostComponent: {
       const parent = parentFiber.stateNode;
       const before = getHostSibling(finishedWork);
-      insertOrAppendPlacementNode(finishedWork, parent, before);
+      insertOrAppendPlacementNode(finishedWork, before, parent);
       break;
     }
 
@@ -137,6 +142,7 @@ function commitPlacement(finishedWork) {
  */
 export function commitMutationEffectsOnFiber(finishedWork, root) {
   switch (finishedWork.tag) {
+    case FunctionComponent:
     case HostRoot:
     case HostComponent:
     case HostText:
