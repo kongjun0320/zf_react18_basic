@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client';
 
 function FunctionComponent() {
   return (
-    <h1 id="container">
+    <h1 id="container" onClick={() => console.log('click')}>
       hello <span style={{ color: 'red' }}>world</span>
     </h1>
   );
